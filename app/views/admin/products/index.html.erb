@@ -1,0 +1,31 @@
+<div class="container mx-auto" data-controller="products" data-action="click->products#clickOutside">
+  <h1 class="text-3xl font-bold mb-5">Products</h1>
+
+  <% if notice.present? %>
+    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+  <% end %>
+
+
+  <!-- Button to trigger modal -->
+  <button id="new-product-btn" class="bg-blue-500 text-white px-4 py-2 rounded" data-action="click->products#openModal">
+    Add New Product
+  </button>
+
+  <!-- Turbo Stream to handle product creation -->
+  <div id="products">
+    <%= render @admin_products %>
+  </div>
+
+  <!-- Modal -->
+  <div id="product-modal" class="hidden fixed z-50 inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white p-6 rounded-lg w-1/3">
+      <h2 class="text-2xl font-semibold mb-4">Add New Product</h2>
+      <div data-action="turbo:submit-end->products#hideOnSubmit">
+        <%= render 'form', product: @product %>
+      </div>
+      <button class="mt-4 bg-red-500 text-white px-4 py-2 rounded" data-action="click->products#closeModal">Close</button>
+    </div>
+  </div>
+
+</div>
+
