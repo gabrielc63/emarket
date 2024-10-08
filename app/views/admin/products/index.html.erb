@@ -1,19 +1,42 @@
 <div class="container mx-auto" data-controller="products" data-action="click->products#clickOutside">
-  <h1 class="text-3xl font-bold mb-5">Products</h1>
 
   <% if notice.present? %>
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
 
+  <% content_for :title, "Products" %>
 
   <!-- Button to trigger modal -->
-  <button id="new-product-btn" class="bg-blue-500 text-white px-4 py-2 rounded" data-action="click->products#openModal">
-    Add New Product
-  </button>
+  <div class="flex justify-between items-center">
+    <button id="new-product-btn" class="bg-blue-500 text-white px-4 py-2 rounded" data-action="click->products#openModal">
+      Add New Product
+    </button>
+  </div>
 
-  <!-- Turbo Stream to handle product creation -->
-  <div id="products">
-    <%= render @admin_products %>
+  <div class="flex flex-col w-full">
+    <div class="overlow-x-auto sm:mx-0.5 lg:mx-0.5">
+      <div class="py-2 inline-block min-w-full">
+        <div class="overlow-x-auto">
+          <table class="min-w-full overflow-x-scroll">
+            <thead class="bg-white border-b">
+              <tr>
+                <th scope="col" class="text-sm font-medium text-gray-800 px-6 py-4 text-left">
+                </th>
+                <th scope="col" class="text-sm font-medium text-gray-800 px-6 py-4 text-left">
+                  Name
+                </th>
+                <th scope="col" class="text-sm font-medium text-gray-800 px-6 py-4 text-left">
+                  Description 
+                </th>
+              </tr>
+            </thead>
+            <tbody is="turbo-frame" id="products">
+              <%= render @admin_products %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Modal -->
