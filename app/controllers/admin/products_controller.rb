@@ -4,7 +4,7 @@ class Admin::ProductsController < AdminController
   # GET /admin/products or /admin/products.json
   def index
     @admin_products = Product.all
-    @product = Product.new
+    @admin_product = Product.new
     @categories = Category.all
   end
 
@@ -17,7 +17,9 @@ class Admin::ProductsController < AdminController
   end
 
   # GET /admin/products/1/edit
-  def edit; end
+  def edit
+    @categories = Category.all
+  end
 
   # POST /admin/products or /admin/products.json
   def create
