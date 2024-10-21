@@ -1,9 +1,13 @@
 class Admin::ProductsController < AdminController
+  PRODUCTS_PER_PAGE = 30
   before_action :set_admin_product, only: %i[show edit update destroy]
 
   # GET /admin/products or /admin/products.json
   def index
-    @admin_products = Product.all
+    @admin_products = Product.includes(%i[category images_attachments])
+                             .order(created_at: :desc)
+                             .page(params[:page])
+                             .per(PRODUCTS_PER_PAGE)
     @admin_product = Product.new
     @categories = Category.all
   end
