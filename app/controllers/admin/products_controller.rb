@@ -4,12 +4,12 @@ class Admin::ProductsController < AdminController
 
   # GET /admin/products or /admin/products.json
   def index
-    @admin_products = Product.includes(%i[category images_attachments])
+    @admin_products = Product.includes([:category, { images_attachments: [:blob] }])
                              .order(created_at: :desc)
                              .page(params[:page])
                              .per(PRODUCTS_PER_PAGE)
     @admin_product = Product.new
-    @categories = Category.all
+    @categories = Category.order(:name)
   end
 
   # GET /admin/products/1 or /admin/products/1.json
@@ -44,13 +44,12 @@ class Admin::ProductsController < AdminController
 
   # PATCH/PUT /admin/products/1 or /admin/products/1.json
   def update
-    respond_to do |format|
-      if @admin_product.update(admin_product_params)
-        format.html { redirect_to admin_product_url(@admin_product), notice: 'Product was successfully updated.' }
-        format.json { render :show, status: :ok, location: @admin_product }
+    respond_to do |_format|
+      if @admin_product.update(admin_product_params.reject { |n| n['images'] })
+        admin_product_params['images']&.each { |image| @admin_product.images.attach(image) }
+        redirect_to admin_products_path, notice: 'Product was successfully updated.'
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @admin_product.errors, status: :unprocessable_entity }
+        render :edit, status: :unprocessable_entity
       end
     end
   end
@@ -69,7 +68,7 @@ class Admin::ProductsController < AdminController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_admin_product
-    @admin_product = Product.find(params[:id])
+    @admin_product = Product.where(id: params[:id]).includes([{ images_attachments: [:blob] }]).first
   end
 
   # Only allow a list of trusted parameters through.
