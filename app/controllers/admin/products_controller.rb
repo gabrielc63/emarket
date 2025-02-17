@@ -2,7 +2,7 @@ class Admin::ProductsController < AdminController
   PRODUCTS_PER_PAGE = 30
   before_action :set_admin_product, only: %i[show edit update destroy]
 
-  # GET /admin/products or /admin/products.json
+  # GET /admin/products
   def index
     @admin_products = Product.includes([:category, { images_attachments: [:blob] }])
                              .order(created_at: :desc)
@@ -45,7 +45,7 @@ class Admin::ProductsController < AdminController
   # PATCH/PUT /admin/products/1 or /admin/products/1.json
   def update
     respond_to do |_format|
-      if @admin_product.update(admin_product_params.reject { |n| n['images'] })
+      if @admin_product.update(admin_product_params.reject { |item| item['images'] })
         admin_product_params['images']&.each { |image| @admin_product.images.attach(image) }
         redirect_to admin_products_path, notice: 'Product was successfully updated.'
       else
